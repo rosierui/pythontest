@@ -14,8 +14,8 @@ strategy:
     #  python.version: '2.7'
     #Python35:
     #  python.version: '3.5'
-    Python36:
-      python.version: '3.6'
+    #Python36:
+    #  python.version: '3.6'
     Python37:
       python.version: '3.7'
 
@@ -34,3 +34,19 @@ steps:
     pip install pytest pytest-azurepipelines
     pytest
   displayName: 'pytest'
+
+- script:
+    python test-main.py
+  displayName: 'pytest'
+- task: Bash@3
+  inputs:
+    targetType: inline
+    script: echo $PWD; echo $(System.DefaultWorkingDirectory); echo $(System.defaultBuildDirectory); ls -l
+  displayName: 'Bash script inline commands'
+- task: Bash@3
+  inputs:
+   targetType: filePath
+   filePath: test-main.sh
+  displayName: 'Bash script filePath'
+
+    
