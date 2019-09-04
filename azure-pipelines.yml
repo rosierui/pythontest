@@ -41,7 +41,7 @@ steps:
 - task: Bash@3
   inputs:
     targetType: inline
-    script: echo $PWD; echo $(System.DefaultWorkingDirectory); echo $(System.defaultBuildDirectory); ls -l
+    script: echo $PWD; echo $(System.DefaultWorkingDirectory); echo $(Build.SourcesDirectory); ls -l
   displayName: 'Bash script inline commands'
 - task: Bash@3
   inputs:
