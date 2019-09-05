@@ -49,4 +49,31 @@ steps:
    filePath: test-main.sh
   displayName: 'Bash script filePath'
 
-    
+- task: PythonScript@0
+  displayName: 'PythonScript regression test'
+  inputs:
+   scriptSource: inline
+   script: |
+       """Performs regression test"""
+       from os import path
+       from glob import glob
+       #
+       #
+       if not True:
+           raise System.exit("error message")
+- script: |
+    pip3 install pyyaml
+  displayName: 'Install pyyaml'
+
+- bash:
+    pushd '$(projectRoot)'
+    chmod +x ./test-main.sh
+
+- script:
+    pushd '$(projectRoot)'
+    ./test-main.sh
+  condition: succeedOrFailed()
+
+
+
+
