@@ -57,24 +57,25 @@ steps:
        """Performs regression test"""
        from os import path
        from glob import glob
+       import sys
        #
+       # processing code here
        #
        if not True:
-           raise System.exit("error message")
+           raise sys.exit("an error occurrred")
 - script: |
     pip3 install pyyaml
+    echo '##vso[task.setvariable variable=projectRoot]$(System.DefaultWorkingDirectory)'
   displayName: 'Install pyyaml'
 
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
 - bash:
-    #pushd '$(projectRoot)'
+    pushd '$(projectRoot)'
     chmod +x ./test-main.sh
 
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azure-devops&tabs=yaml
 - script:
-    #pushd '$(projectRoot)'
+    pushd '$(projectRoot)'
     ./test-main.sh
   condition: succeededOrFailed()
-
-
-
-
-
