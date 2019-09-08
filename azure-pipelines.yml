@@ -23,34 +23,53 @@ steps:
 - task: UsePythonVersion@0
   inputs:
     versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
+  #displayName: 'Use Python $(python.version)'
 
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
 - script: |
     python -m pip install --upgrade pip
     pip install -r requirements.txt
-  displayName: 'Install dependencies'
+  #displayName: 'Install dependencies'
 
 - script: |
     pip install pytest pytest-azurepipelines
     pytest
-  displayName: 'pytest'
+  #displayName: 'pytest'
 
 - script:
     python test-main.py
-  displayName: 'pytest'
+  #displayName: 'pytest'
+
+- script: |
+    pip3 install pyyaml
+    echo '##vso[task.setvariable variable=projectRoot]$(System.DefaultWorkingDirectory)'
+  #displayName: 'Install pyyaml'
+
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azure-devops&tabs=yaml
+- script:
+    pushd '$(projectRoot)'
+    ./test-main.sh
+  condition: succeededOrFailed()
+
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/bash?view=azure-devops
 - task: Bash@3
   inputs:
     targetType: inline
     script: echo $PWD; echo $(System.DefaultWorkingDirectory); echo $(Build.SourcesDirectory); ls -l
-  displayName: 'Bash script inline commands'
+  #displayName: 'Bash script inline commands'
 - task: Bash@3
   inputs:
    targetType: filePath
    filePath: test-main.sh
-  displayName: 'Bash script filePath'
+  #displayName: 'Bash script filePath'
+
+# The Bash task also has a shortcut syntax in YAML:
+- bash:
+    pushd '$(projectRoot)'
+    chmod +x ./test-main.sh
 
 - task: PythonScript@0
-  displayName: 'PythonScript regression test'
+  #displayName: 'PythonScript regression test'
   inputs:
    scriptSource: inline
    script: |
@@ -63,19 +82,4 @@ steps:
        #
        if not True:
            raise sys.exit("an error occurrred")
-- script: |
-    pip3 install pyyaml
-    echo '##vso[task.setvariable variable=projectRoot]$(System.DefaultWorkingDirectory)'
-  displayName: 'Install pyyaml'
 
-# https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops
-# https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
-- bash:
-    pushd '$(projectRoot)'
-    chmod +x ./test-main.sh
-
-# https://docs.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azure-devops&tabs=yaml
-- script:
-    pushd '$(projectRoot)'
-    ./test-main.sh
-  condition: succeededOrFailed()
