@@ -14,3 +14,4 @@ python -m unittest mytest.py
 $ python -m unittest mytest.py
 $ py.test mytest.py
 
+$ pytest -s mytest.py -k "test_1 ot test_2"
