@@ -3,79 +3,78 @@
 # Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
-trigger:
-- master
-- dev/*
+# commnet CTRL + 7 
 
-pool:
-  vmImage: 'ubuntu-latest'
-strategy:
-  matrix:
-    #Python27:
-    #  python.version: '2.7'
-    #Python35:
-    #  python.version: '3.5'
-    #Python36:
-    #  python.version: '3.6'
-    Python37:
-      python.version: '3.7'
+# trigger:
+# - master
+# - dev/*
 
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
-
-- script: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-  displayName: 'Install dependencies'
-
-- script: |
-    pip install pytest pytest-azurepipelines
-    pytest
-  displayName: 'pytest'
-
-- script:
-    python test-main.py
-  displayName: 'pytest'
-- task: Bash@3
-  inputs:
-    targetType: inline
-    script: echo $PWD; echo $(System.DefaultWorkingDirectory); echo $(Build.SourcesDirectory); ls -l
-  displayName: 'Bash script inline commands'
-- task: Bash@3
-  inputs:
-   targetType: filePath
-   filePath: test-main.sh
-  displayName: 'Bash script filePath'
-
-- task: PythonScript@0
-  displayName: 'PythonScript regression test'
-  inputs:
-   scriptSource: inline
-   script: |
-       """Performs regression test"""
-       from os import path
-       from glob import glob
-       #
-       #
-       if not True:
-           raise System.exit("error message")
-- script: |
-    pip3 install pyyaml
-  displayName: 'Install pyyaml'
-
-- bash:
-    #pushd '$(projectRoot)'
-    chmod +x ./test-main.sh
-
-- script:
-    #pushd '$(projectRoot)'
-    ./test-main.sh
-  condition: succeededOrFailed()
-
-
-
-
-
+jobs:
+- job:
+   pool:
+     vmImage: 'ubuntu-latest'
+   strategy:
+     matrix:
+       #Python27:
+       #  python.version: '2.7'
+       #Python35:
+       #  python.version: '3.5'
+       #Python36:
+       #  python.version: '3.6'
+       Python37:
+         python.version: '3.7'
+   
+   steps:
+   - task: UsePythonVersion@0
+     inputs:
+       versionSpec: '$(python.version)'
+     displayName: 'Use Python $(python.version)'
+   
+   - script: |
+       python -m pip install --upgrade pip
+       pip install -r requirements.txt
+     displayName: 'Install dependencies'
+   
+   - script: |
+       pip install pytest pytest-azurepipelines
+       pytest
+     displayName: 'pytest'
+   
+   - script:
+       python test-main.py
+     displayName: 'pytest'
+   - task: Bash@3
+     inputs:
+       targetType: inline
+       script: echo $PWD; echo $(System.DefaultWorkingDirectory); echo $(Build.SourcesDirectory); ls -l
+     displayName: 'Bash script inline commands'
+   - task: Bash@3
+     inputs:
+      targetType: filePath
+      filePath: test-main.sh
+     displayName: 'Bash script filePath'
+   
+   - task: PythonScript@0
+     displayName: 'PythonScript regression test'
+     inputs:
+      scriptSource: inline
+      script: |
+          """Performs regression test"""
+          from os import path
+          from glob import glob
+          #
+          #
+          if not True:
+              raise System.exit("error message")
+   - script: |
+       pip3 install pyyaml
+     displayName: 'Install pyyaml'
+   
+   - bash:
+       #pushd '$(projectRoot)'
+       chmod +x ./test-main.sh
+   
+   - script:
+       #pushd '$(projectRoot)'
+       ./test-main.sh
+     condition: succeededOrFailed()
