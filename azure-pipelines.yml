@@ -59,6 +59,7 @@ steps:
     targetType: inline
     script: echo $PWD; echo $(System.DefaultWorkingDirectory); echo $(Build.SourcesDirectory); ls -l
   displayName: 'Bash script inline commands'
+
 - task: Bash@3
   inputs:
    targetType: filePath
@@ -67,7 +68,8 @@ steps:
 
 # The Bash task also has a shortcut syntax in YAML:
 - bash:
-    pushd '$(projectRoot)'
+    #pushd '$(projectRoot)'
+    echo '$(projectRoot)'
     chmod +x ./test-main.sh
   displayName: 'Bash - chmod +x ./test-main.sh'
 
