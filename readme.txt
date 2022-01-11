@@ -1,3 +1,4 @@
+# how to test
 py.test
 py.test test* my*
 py.test test* my* py*
